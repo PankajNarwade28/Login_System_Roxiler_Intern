@@ -7,6 +7,7 @@ import OwnerDash from "./components/OwnerDash/OwnerDash";
 import UserDash from "./components/UserDash/UserDash";
 import AuthForm from "./components/Auth/AuthForm";
 import UserLists from "./components/User/userLists";
+import UpdatePassword from "./components/UpdatePassword";
 
 function App() {
   const navigate = useNavigate();
@@ -53,6 +54,11 @@ function App() {
               <Link to="/users" className="nav-item" onClick={() => setMenuOpen(false)}>Manage Users</Link>
             )}
 
+
+            {isLoggedIn && user?.role !== "System Administrator" && (
+              <Link to="/password" className="nav-item" onClick={() => setMenuOpen(false)}>Update Password</Link>
+            )}
+
             {!isLoggedIn ? (
               <Link to="/auth" className="nav-item" onClick={() => setMenuOpen(false)}>Login</Link>
             ) : (
@@ -79,6 +85,14 @@ function App() {
           <Route path="/users" element={
             <ProtectedRoute allowedRoles={["System Administrator"]}>
               <UserLists />
+            </ProtectedRoute>
+          } />
+
+
+          {/* Protected Route for Admin only */}
+          <Route path="/password" element={
+            <ProtectedRoute allowedRoles={["Normal User", "Store Owner"]}>
+              <UpdatePassword />
             </ProtectedRoute>
           } />
 

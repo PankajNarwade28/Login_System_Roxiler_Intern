@@ -28,8 +28,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
 
         <div className={`nav-links ${menuOpen ? "active" : ""}`}>
           <Link to="/" className="nav-item" onClick={() => setMenuOpen(false)}>Home</Link>
-          <Link to="/users" className="nav-item" onClick={() => setMenuOpen(false)}>Users</Link>
-          
+          <Link to="/users" className="nav-item" onClick={() => setMenuOpen(false)}>Users</Link> 
           {/* Conditional Rendering based on login status [cite: 9] */}
           {!isLoggedIn ? (
             <Link to="/auth" className="nav-item" onClick={() => setMenuOpen(false)}>Login/Signup</Link>

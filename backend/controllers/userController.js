@@ -102,11 +102,50 @@ const signupUser = async (req, res) => {
     }
 };
 
+// UPDATE PASSWORD API
+const updatePassword = async (req, res) => {
+    const { oldPassword, newPassword } = req.body;
+    const userId = req.user.id; // Extracted from verifyToken middleware
+
+    // 1. Requirement Validation: Password Complexity (8-16 chars, Upper, Special)
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,16})/;
+    if (!passwordRegex.test(newPassword)) {
+        return res.status(400).json({ 
+            message: "New password must be 8-16 chars, include one uppercase and one special character." 
+        });
+    }
+
+    try {
+        // 2. Fetch current user from database
+        const [rows] = await db.execute('SELECT password FROM users WHERE id = ?', [userId]);
+        if (rows.length === 0) return res.status(404).json({ message: "User not found" });
+
+        const user = rows[0];
+
+        // 3. Compare Old Password with stored hash
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: "Current password is incorrect." });
+        }
+
+        // 4. Hash the New Password
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+        // 5. Update the Database
+        await db.execute('UPDATE users SET password = ? WHERE id = ?', [hashedNewPassword, userId]);
+
+        res.json({ message: "Password updated successfully!" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
 
 
 // MUST export them all at once like this:
 module.exports = { 
     getUsers, 
     loginUser, 
-    signupUser 
+    signupUser ,
+    updatePassword
 };
