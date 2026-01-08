@@ -1,19 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './AdminDash.css';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./AdminDash.css";
 
 const AdminDash = () => {
   const [stats, setStats] = useState({ users: 0, stores: 0, ratings: 0 });
-  const [view, setView] = useState('overview'); // overview, users, stores
+  // Changed default view to 'users' so data loads on mount
+  const [view, setView] = useState("users");
+  const [dataList, setDataList] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // Requirement: Dashboard must display total users, stores, and ratings
+  // Fetch Stats (Total Users, Stores, Ratings)
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/stats`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/admin/stats`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         setStats(response.data);
       } catch (error) {
         console.error("Error fetching stats", error);
@@ -22,13 +28,32 @@ const AdminDash = () => {
     fetchStats();
   }, []);
 
+  // Fetch Detailed Lists (Triggered on mount because view starts as 'users')
+  // inside your fetchData useEffect
+useEffect(() => {
+  const fetchData = async () => {
+    setLoading(true);
+    setDataList([]); // CLEAR previous data immediately to avoid render conflicts
+    try {
+      const token = localStorage.getItem('token');
+      const endpoint = view === 'users' ? '/api/admin/users' : '/api/admin/stores';
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}${endpoint}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDataList(response.data || []); 
+    } catch (error) {
+      console.error(`Error fetching ${view}`, error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, [view]);
+
   return (
     <div className="admin-dash-container">
       <header className="dash-header">
         <h1>System Administrator Dashboard</h1>
-        <div className="dash-actions">
-          <button className="add-btn">+ Add New User/Store</button>
-        </div>
       </header>
 
       {/* Stats Cards Section */}
@@ -47,32 +72,85 @@ const AdminDash = () => {
         </div>
       </section>
 
-      {/* Navigation for Listings */}
+      {/* Navigation Tabs */}
       <div className="dash-nav">
-        <button 
-          className={view === 'users' ? 'active' : ''} 
-          onClick={() => setView('users')}
+        <button
+          className={view === "users" ? "active" : ""}
+          onClick={() => setView("users")}
         >
           Manage Users
         </button>
-        <button 
-          className={view === 'stores' ? 'active' : ''} 
-          onClick={() => setView('stores')}
+        <button
+          className={view === "stores" ? "active" : ""}
+          onClick={() => setView("stores")}
         >
           Manage Stores
         </button>
       </div>
 
       <main className="dash-content">
-        {view === 'overview' && (
-          <div className="placeholder-view">
-            <p>Select a category above to view and filter listings.</p>
+        {loading ? (
+          <div className="loader-container">
+            <p className="loader">Fetching latest information...</p>
+          </div>
+        ) : (
+          <div className="table-container">
+            {view === "users" ? (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataList.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.name}</td>
+                      <td>{user.email}</td>
+                      <td>{user.address}</td>
+                      {/* Replace your old role-badge td with this safe version */}
+                      <td>
+                        <span
+                          className={`role-badge ${(
+                            user.role || "Normal-User"
+                          ).replace(/\s+/g, "-")}`}
+                        >
+                          {user.role || "Normal User"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Store Name</th>
+                    <th>Owner Email</th>
+                    <th>Address</th>
+                    <th>Avg Rating</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataList.map((store) => (
+                    <tr key={store.id}>
+                      <td>{store.name}</td>
+                      <td>{store.owner_email || "N/A"}</td>
+                      <td>{store.address}</td>
+                      <td>
+                        {parseFloat(store.overallRating || 0).toFixed(1)} ⭐
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         )}
-
-        {/* This is where your UserLists component or StoreLists would be injected */}
-        {view === 'users' && <div className="list-wrapper"><h3>User Listings (Name, Email, Address, Role)</h3></div>}
-        {view === 'stores' && <div className="list-wrapper"><h3>Store Listings (Name, Email, Address, Rating)</h3></div>}
       </main>
     </div>
   );

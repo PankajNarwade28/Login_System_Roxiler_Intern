@@ -4,6 +4,7 @@
   margin: 0 auto;
 }
 
+/* Header and Dynamic Search */
 .user-header {
   margin-bottom: 2rem;
   text-align: center;
@@ -21,14 +22,21 @@
   padding: 0.75rem;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
-  width: 250px;
+  width: 280px;
+  transition: border-color 0.2s;
 }
 
-/* Store Cards */
+.search-bar input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Store Cards Grid */
 .store-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 25px;
 }
 
 .store-card {
@@ -39,70 +47,126 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #f1f5f9;
 }
 
 .store-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
+/* Requirement: Store Name, Address, Overall Rating Display */
 .store-info h3 {
-  margin: 0 0 10px 0;
-  color: var(--primary-color);
+  margin: 0 0 8px 0;
+  color: #1e293b;
+  font-size: 1.25rem;
 }
 
 .store-address {
   font-size: 0.9rem;
   color: #64748b;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.4;
 }
 
 .rating-badge {
   background: #fef3c7;
   color: #92400e;
-  padding: 4px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
-  display: inline-block;
-  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  font-weight: 700;
   font-size: 0.85rem;
 }
 
-/* Star Rating System */
+/* Requirement: User Rating Section & Submit/Modify Options */
 .user-rating-section {
   margin-top: 1.5rem;
   border-top: 1px solid #f1f5f9;
-  padding-top: 1rem;
+  padding-top: 1.25rem;
+}
+
+.user-rating-section p {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 8px;
 }
 
 .star-inputs {
   display: flex;
-  gap: 5px;
-  margin: 10px 0;
+  gap: 4px;
+  margin-bottom: 10px;
 }
 
 .star {
   background: none;
   border: none;
-  font-size: 1.5rem;
-  color: #cbd5e1;
+  font-size: 1.75rem;
+  color: #e2e8f0; /* Default empty star */
   cursor: pointer;
   padding: 0;
-  transition: color 0.2s;
+  transition: color 0.2s, transform 0.1s;
 }
 
-.star.active, .star:hover {
-  color: #fbbf24;
+.star:hover {
+  transform: scale(1.1);
 }
 
-.modify-btn {
-  width: 100%;
-  font-size: 0.85rem;
-  padding: 8px;
-  margin-top: 10px;
+/* Requirement: Highlighted Rating State */
+.star.active {
+  color: #fbbf24; /* Gold color for submitted/hovered stars */
 }
 
-@media (max-width: 600px) {
+.modify-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+/* Empty State and Loader */
+.no-data-container {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 2px dashed #e2e8f0;
+}
+
+.no-data-container h3 {
+  color: #1e293b;
+  margin-bottom: 0.75rem;
+}
+
+.no-data-container p {
+  color: #64748b;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.loader {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-weight: 600;
+  color: #3b82f6;
+  padding: 3rem;
+}
+
+/* Responsive Handling */
+@media (max-width: 640px) {
+  .user-dash-container {
+    padding: 1rem;
+  }
+  
   .search-bar input {
     width: 100%;
+  }
+  
+  .store-grid {
+    grid-template-columns: 1fr;
   }
 }

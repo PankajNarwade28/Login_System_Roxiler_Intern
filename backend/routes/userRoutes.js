@@ -1,7 +1,7 @@
 // backend/routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
-const { getUsers, loginUser, signupUser ,updatePassword} = require('../controllers/userController');
+const { getUsers, loginUser, signupUser ,updatePassword,getStores, submitRating} = require('../controllers/userController');
 
 const { verifyToken } = require('../middleware/auth')
 
@@ -12,4 +12,8 @@ router.post('/signup', signupUser);;
 
 // This route requires authentication
 router.put('/update-password', verifyToken, updatePassword);
+
+// Requirement: Normal users can view a list of all registered stores
+router.get('/', verifyToken, getStores);
+
 module.exports = router;

@@ -93,3 +93,47 @@
     grid-template-columns: 1fr;
   }
 }
+
+.table-container {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.admin-table th {
+  background-color: #f8fafc;
+  padding: 12px;
+  border-bottom: 2px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.admin-table td {
+  padding: 12px;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.admin-table tr:hover {
+  background-color: #f8fafc;
+}
+
+.role-badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.role-badge.Store-Owner { background: #dcfce7; color: #166534; }
+.role-badge.Normal-User { background: #e0f2fe; color: #075985; }
+.role-badge.System-Administrator { background: #fef2f2; color: #991b1b; }

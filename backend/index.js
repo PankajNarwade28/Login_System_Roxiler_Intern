@@ -10,6 +10,12 @@ dotenv.config();
 const PORT= process.env.PORT;
 const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
+const adminRoutes = require('./routes/adminRoutes');
+app.use('/api/admin', adminRoutes);
+
+// Import and use your store routes
+const storeRoutes = require('./routes/storeRoutes');
+app.use('/api/stores', storeRoutes);
 
 app.get('/admin', verifyToken, checkRole(['admin']), (req, res) => {
     res.send('Welcome Admin');

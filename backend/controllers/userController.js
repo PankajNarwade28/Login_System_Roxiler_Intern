@@ -142,10 +142,62 @@ const updatePassword = async (req, res) => {
 };
 
 
+// Requirement: Can view all registered stores with Overall and User Rating
+const getStores = async (req, res) => {
+    try {
+        const { name, address } = req.query;
+        const userId = req.user.id; 
+
+        let query = `
+            SELECT 
+                s.id, s.name, s.address, 
+                CAST(COALESCE(AVG(r.rating_value), 0) AS DECIMAL(10,1)) as overallRating,
+                (SELECT rating_value FROM ratings WHERE store_id = s.id AND user_id = ?) as userRating
+            FROM stores s
+            LEFT JOIN ratings r ON s.id = r.store_id
+            WHERE 1=1
+        `;
+        
+        const params = [userId];
+        if (name) { query += " AND s.name LIKE ?"; params.push(`%${name}%`); }
+        if (address) { query += " AND s.address LIKE ?"; params.push(`%${address}%`); }
+        query += " GROUP BY s.id";
+
+        const [rows] = await db.execute(query, params);
+        res.status(200).json(rows);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+// Requirement: Submit or modify ratings (between 1 to 5)
+const submitRating = async (req, res) => {
+    const { storeId, rating } = req.body;
+    const userId = req.user.id;
+
+    if (rating < 1 || rating > 5) {
+        return res.status(400).json({ message: "Rating must be between 1 and 5" });
+    }
+
+    try {
+        const query = `
+            INSERT INTO ratings (user_id, store_id, rating_value) 
+            VALUES (?, ?, ?) 
+            ON DUPLICATE KEY UPDATE rating_value = VALUES(rating_value)
+        `;
+        await db.execute(query, [userId, storeId, rating]);
+        res.json({ message: "Rating updated successfully!" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // MUST export them all at once like this:
 module.exports = { 
     getUsers, 
     loginUser, 
     signupUser ,
-    updatePassword
+    updatePassword,
+    getStores,
+    submitRating
 };
