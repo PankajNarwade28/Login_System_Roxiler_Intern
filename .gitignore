@@ -1,3 +1,9 @@
 node_modules/
 /dist
 /.env
+
+backend/.gitignore
+--- a/file:///c%3A/Dev/Roxiler/backend/.gitignore   
+
+frontend/.gitignore
++++ b/file:///c%3A/Dev/Roxiler/backend/.gitignore
