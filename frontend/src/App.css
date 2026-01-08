@@ -82,3 +82,41 @@ button:disabled {
   background-color: #94a3b8;
   cursor: not-allowed;
 }
+
+.nav-auth-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info-tag {
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 600;
+  background: #f1f5f9;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.logout-btn {
+  background-color: #ef4444; /* Standard Red */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #dc2626;
+}
+
+@media (max-width: 768px) {
+  .nav-auth-section {
+    flex-direction: column;
+    width: 100%;
+    padding: 10px 0;
+  }
+}

@@ -1,8 +1,8 @@
-import { Routes, Route, Link } from "react-router-dom";
-import { useState } from "react";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import "./App.css";
-import "./Navbar.css"; 
+import "./Navbar.css";
 import AuthForm from "./components/Auth/AuthForm";
 import UserLists from "./components/User/userLists";
 
@@ -19,9 +19,15 @@ function Home({ backendMessage, checkBackend, loading }) {
 }
 
 function App() {
+  const navigate = useNavigate();
   const [backendMessage, setBackendMessage] = useState("No response yet");
   const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Check login status
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const isLoggedIn = !!token;
 
   const checkBackend = async () => {
     setLoading(true);
@@ -37,6 +43,14 @@ function App() {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setMenuOpen(false);
+    alert("Logged out successfully");
+    navigate("/auth");
+  };
+
   return (
     <div className="App">
       <nav className="navbar">
@@ -45,14 +59,13 @@ function App() {
             LoginSYS
           </Link>
 
-          {/* Hamburger Icon */}
           <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
             <span className={menuOpen ? "bar open" : "bar"}></span>
             <span className={menuOpen ? "bar open" : "bar"}></span>
             <span className={menuOpen ? "bar open" : "bar"}></span>
           </button>
 
-          {/* Nav Links - Conditional class for mobile */}
+          {/* Nav Links - Conditional rendering for Admin only */}
           <div className={`nav-links ${menuOpen ? "active" : ""}`}>
             <Link
               to="/"
@@ -61,20 +74,34 @@ function App() {
             >
               Home
             </Link>
-            <Link
-              to="/users"
-              className="nav-item"
-              onClick={() => setMenuOpen(false)}
-            >
-              Users
-            </Link>
-            <Link
-              to="/auth"
-              className="nav-item"
-              onClick={() => setMenuOpen(false)}
-            >
-              Login
-            </Link>
+
+            {/* Only show the Users link if the logged-in user is a System Administrator */}
+            {isLoggedIn && user?.role === "System Administrator" && (
+              <Link
+                to="/users"
+                className="nav-item"
+                onClick={() => setMenuOpen(false)}
+              >
+                Users
+              </Link>
+            )}
+
+            {!isLoggedIn ? (
+              <Link
+                to="/auth"
+                className="nav-item"
+                onClick={() => setMenuOpen(false)}
+              >
+                Login
+              </Link>
+            ) : (
+              <div className="nav-auth-section">
+                <span className="user-info-tag">{user?.role}</span>
+                <button className="logout-btn" onClick={handleLogout}>
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </nav>
@@ -92,7 +119,6 @@ function App() {
             }
           />
           <Route path="/users" element={<UserLists />} />
-
           <Route path="/auth" element={<AuthForm />} />
         </Routes>
       </main>

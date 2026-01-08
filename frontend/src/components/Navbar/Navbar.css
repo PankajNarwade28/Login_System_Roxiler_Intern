@@ -1,0 +1,22 @@
+.logout-btn {
+  background-color: #ef4444; /* Red color for logout */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #dc2626;
+}
+
+.user-role-tag {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: bold;
+  align-self: center;
+  margin-right: 10px;
+}   
