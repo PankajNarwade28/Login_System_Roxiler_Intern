@@ -12,7 +12,8 @@ const userRoutes = require('./routes/userRoutes');
 app.use('/api/users', userRoutes);
 const adminRoutes = require('./routes/adminRoutes');
 app.use('/api/admin', adminRoutes);
-
+const ownerRoutes = require('./routes/ownerRoutes');
+app.use('/api/owner', ownerRoutes);
 // Import and use your store routes
 const storeRoutes = require('./routes/storeRoutes');
 app.use('/api/stores', storeRoutes);

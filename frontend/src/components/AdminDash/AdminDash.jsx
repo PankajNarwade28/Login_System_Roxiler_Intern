@@ -9,6 +9,37 @@ const AdminDash = () => {
   const [dataList, setDataList] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  // Inside AdminDash.jsx - Modal or Form section
+const [newStore, setNewStore] = useState({ name: '', address: '', ownerId: '' });
+const [owners, setOwners] = useState([]); // To populate the dropdown
+
+// Fetch users with 'Store Owner' role to populate the dropdown
+useEffect(() => {
+  const fetchOwners = async () => {
+    const token = localStorage.getItem('token');
+    const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/users`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    // Filter only those who are Store Owners
+    setOwners(res.data.filter(u => u.role === 'Store Owner'));
+  };
+  if (view === 'stores') fetchOwners();
+}, [view]);
+
+const handleCreateStore = async (e) => {
+  e.preventDefault();
+  try {
+    const token = localStorage.getItem('token');
+    await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/admin/stores`, newStore, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    alert("Store Created Successfully!");
+    setNewStore({ name: '', address: '', ownerId: '' });
+  } catch (err) {
+    alert("Error creating store: " + err.response?.data?.message);
+  }
+};
+
   // Fetch Stats (Total Users, Stores, Ratings)
   useEffect(() => {
     const fetchStats = async () => {

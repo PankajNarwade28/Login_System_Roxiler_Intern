@@ -53,4 +53,20 @@ const getAllStores = async (req, res) => {
     }
 };
 
-module.exports = { getStats, getAllUsers, getAllStores };
+// controllers/adminController.js
+const createStore = async (req, res) => {
+    const { name, address, ownerId } = req.body;
+    try {
+        // Insert new store linked to the selected Owner ID
+        const [result] = await db.execute(
+            'INSERT INTO stores (name, address, owner_id) VALUES (?, ?, ?)',
+            [name, address, ownerId]
+        );
+        res.status(201).json({ message: "Store created", storeId: result.insertId });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+ 
+
+module.exports = { getStats, getAllUsers, getAllStores , createStore};
