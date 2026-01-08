@@ -44,11 +44,11 @@ const AuthForm = () => {
       // Redirect based on role assigned in the system 
       const role = response.data.user.role;
       if (role === 'System Administrator') {
-        window.location.href = '/admin-dashboard';
+        window.location.href = '/';
       } else if (role === 'Store Owner') {
-        window.location.href = '/owner-dashboard';
+        window.location.href = '/';
       } else {
-        window.location.href = '/users';
+        window.location.href = '/';
       }
     } catch (error) {
       alert(error.response?.data?.message || "Login Failed");
