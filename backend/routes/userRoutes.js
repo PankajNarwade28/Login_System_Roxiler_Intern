@@ -1,8 +1,11 @@
+// backend/routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
-const { getUsers } = require('../controllers/userController');
+const { getUsers, loginUser, signupUser } = require('../controllers/userController');
 
-// Sample route to get all users
-router.get('/', getUsers);
+// Check: Ensure getUsers, loginUser, and signupUser are actually functions here
+router.get('/', getUsers); 
+router.post('/login', loginUser);
+router.post('/signup', signupUser);
 
 module.exports = router;

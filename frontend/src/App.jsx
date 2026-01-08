@@ -1,10 +1,10 @@
-import { Routes, Route, Link } from 'react-router-dom';
-import { useState } from 'react';
-import axios from 'axios'; 
-import './App.css'; 
-import './Navbar.css';
-import UserLists from './components/userLists';
-
+import { Routes, Route, Link } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import "./App.css";
+import "./Navbar.css"; 
+import AuthForm from "./components/Auth/AuthForm";
+import UserLists from "./components/User/userLists";
 
 function Home({ backendMessage, checkBackend, loading }) {
   return (
@@ -26,7 +26,9 @@ function App() {
   const checkBackend = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/hello`);
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/hello`
+      );
       setBackendMessage(response.data.message);
     } catch (error) {
       setBackendMessage("Failed to connect to backend");
@@ -35,12 +37,14 @@ function App() {
     }
   };
 
- return (
+  return (
     <div className="App">
       <nav className="navbar">
         <div className="nav-container">
-          <Link to="/" className="nav-logo">LoginSYS</Link>
-          
+          <Link to="/" className="nav-logo">
+            LoginSYS
+          </Link>
+
           {/* Hamburger Icon */}
           <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
             <span className={menuOpen ? "bar open" : "bar"}></span>
@@ -50,31 +54,50 @@ function App() {
 
           {/* Nav Links - Conditional class for mobile */}
           <div className={`nav-links ${menuOpen ? "active" : ""}`}>
-            <Link to="/" className="nav-item" onClick={() => setMenuOpen(false)}>Home</Link>
-            <Link to="/users" className="nav-item" onClick={() => setMenuOpen(false)}>Users</Link>
+            <Link
+              to="/"
+              className="nav-item"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              to="/users"
+              className="nav-item"
+              onClick={() => setMenuOpen(false)}
+            >
+              Users
+            </Link>
+            <Link
+              to="/auth"
+              className="nav-item"
+              onClick={() => setMenuOpen(false)}
+            >
+              Login
+            </Link>
           </div>
         </div>
       </nav>
 
       <main className="content-area">
         <Routes>
-          // Change this line in your Routes block:
-<Route 
-  path="/" 
-  element={
-    <Home 
-      backendMessage={backendMessage} 
-      checkBackend={checkBackend} 
-      loading={loading} 
-    />
-  } 
-/>
+          <Route
+            path="/"
+            element={
+              <Home
+                backendMessage={backendMessage}
+                checkBackend={checkBackend}
+                loading={loading}
+              />
+            }
+          />
           <Route path="/users" element={<UserLists />} />
+
+          <Route path="/auth" element={<AuthForm />} />
         </Routes>
       </main>
     </div>
   );
-
 }
 
 export default App;
