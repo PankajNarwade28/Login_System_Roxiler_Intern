@@ -162,9 +162,3 @@ CREATE TABLE ratings (
 
 ---
 
-## 🔧 Essential Troubleshooting
-
-* **Fixed "replace of undefined" Error**: Ensure `AdminDash.jsx` handles missing roles with a fallback: `(user.role || "Normal-User").replace(/\s+/g, '-')`.
-* **Resolved 404 Routes**: Verified that `backend/routes/adminRoutes.js` contains `router.post('/add-user', addUser)` and `router.post('/add-store', addStore)`.
-* **Bcrypt Module Error**: If you see a `MODULE_NOT_FOUND` error, ensure you have run `npm install bcryptjs` and your controller uses `require('bcryptjs')`.
- 
