@@ -28,7 +28,7 @@ A full-stack web application designed for System Administrators, Store Owners, a
 ### 2. Clone the Repository
 
 ```bash
-git clone <your-repository-url>
+git clone https://github.com/PankajNarwade28/Login_System_Roxiler_Intern.git
 cd Roxiler
 
 ```
@@ -161,4 +161,5 @@ CREATE TABLE ratings (
 ```
 
 ---
+
 
