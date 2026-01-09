@@ -29,7 +29,7 @@ A full-stack web application designed for System Administrators, Store Owners, a
 
 ```bash
 git clone https://github.com/PankajNarwade28/Login_System_Roxiler_Intern.git
-cd Roxiler
+cd Login_System_Roxiler_Intern
 
 ```
 
@@ -161,5 +161,6 @@ CREATE TABLE ratings (
 ```
 
 ---
+
 
 
