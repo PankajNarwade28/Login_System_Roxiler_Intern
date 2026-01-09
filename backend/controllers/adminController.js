@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const bcrypt = require('bcrypt');
 
 // 1. Fetch System Stats
 const getStats = async (req, res) => {
@@ -67,6 +68,36 @@ const createStore = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
- 
+const addUser = async (req, res) => {
+    const { name, email, password, address, role } = req.body;
+    
+    try {
+        // Direct password hashing from user input
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        const query = 'INSERT INTO users (name, email, password, address, role) VALUES (?, ?, ?, ?, ?)';
+        await db.execute(query, [name, email, hashedPassword, address, role]);
 
-module.exports = { getStats, getAllUsers, getAllStores , createStore};
+        res.status(201).json({ 
+            message: "User registered successfully" 
+        });
+    } catch (error) {
+        console.error("Add User Error:", error);
+        res.status(500).json({ message: "Error adding user", error: error.message });
+    }
+};
+
+const addStore = async (req, res) => {
+    const { name, address, ownerId } = req.body;
+    try {
+        await db.execute(
+            'INSERT INTO stores (name, address, owner_id) VALUES (?, ?, ?)',
+            [name, address, ownerId]
+        );
+        res.status(201).json({ message: "Store linked successfully" });
+    } catch (error) {
+        res.status(500).json({ message: "Error adding store", error: error.message });
+    }
+};
+
+module.exports = { getStats, getAllUsers, getAllStores , createStore, addUser, addStore};
